@@ -2,12 +2,15 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
+	"os"
 
 	api "github.com/firescout/repo-manager/restserver"
 )
 
 type HTTPHandler struct {
+	repos Repos
 }
 
 type StdResponse struct {
@@ -16,8 +19,10 @@ type StdResponse struct {
 }
 
 type Repo struct {
+	Name        string `json:"name"`
 	Url         string `json:"url"`
 	AfterScript string `json:"after_script"`
+	Path        string `json:"path"`
 }
 
 type Repos struct {
@@ -25,19 +30,36 @@ type Repos struct {
 }
 
 func NewHandler() api.DefaultApiServicer {
-	return &HTTPHandler{}
+	repos := new(Repos)
+	file, err := os.ReadFile("repos.json")
+	if err != nil {
+		panic("Failed to read repos.json: " + err.Error())
+	}
+	err = json.Unmarshal(file, repos)
+	if err != nil {
+		panic("Failed to Unmarshal or parse repos.json: " + err.Error())
+	}
+	return &HTTPHandler{
+		repos: *repos,
+	}
 }
 
 func (s *HTTPHandler) OnPush(ctx context.Context, repoName string) (api.ImplResponse, error) {
-	if repoName == "" {
-		return api.Response(http.StatusBadRequest, StdResponse{
-			Status:  "error",
-			Message: "Repository name is required",
-		}), nil
-	}
 	res := StdResponse{
 		Status:  "success",
 		Message: "Received push for repository: " + repoName,
+	}
+	if repoName == "" {
+		res.Status = "error"
+		res.Message = "Repository name cannot be empty"
+		return api.Response(http.StatusBadRequest, res), nil
+	}
+
+	err := s.handleOnPush(repoName)
+	if err != nil {
+		res.Status = "error"
+		res.Message = "Error handling push for repository: " + repoName + " - " + err.Error()
+		return api.Response(http.StatusInternalServerError, res), nil
 	}
 
 	return api.Response(http.StatusOK, res), nil

@@ -1,0 +1,10 @@
+{
+    "repos": [
+        {
+            "name": "REPONAME",
+            "url": "https://github.com/example/REPONAME",
+            "after-script": "",
+            "path": "/var/www/REPONAME"
+        }
+    ]
+}
