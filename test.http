@@ -1,0 +1,3 @@
+## GET repository on push
+GET http://localhost:9090/repo/push?repo=RepoName
+##
