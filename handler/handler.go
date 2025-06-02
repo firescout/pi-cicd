@@ -19,10 +19,14 @@ type StdResponse struct {
 }
 
 type Repo struct {
-	Name        string `json:"name"`
-	Url         string `json:"url"`
-	AfterScript string `json:"after_script"`
-	Path        string `json:"path"`
+	Name        string        `json:"name"`
+	Url         string        `json:"url"`
+	AfterScript []AfterScript `json:"after_script"`
+	Path        string        `json:"path"`
+}
+type AfterScript struct {
+	Command string   `json:"command"`
+	Args    []string `json:"args"`
 }
 
 type Repos struct {
@@ -31,7 +35,7 @@ type Repos struct {
 
 func NewHandler() api.DefaultApiServicer {
 	repos := new(Repos)
-	file, err := os.ReadFile("repos.json")
+	file, err := os.ReadFile("firescout.json")
 	if err != nil {
 		panic("Failed to read repos.json: " + err.Error())
 	}

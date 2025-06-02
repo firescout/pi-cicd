@@ -52,15 +52,35 @@ service/
   Initiates a shutdown of the service.
 
 ## Usage
+1. **Setup Json**
+```json
+{
+    "repos": [
+        {
+            "name": "REPONAME",
+            "url": "https://github.com/example/REPONAME",
+            "after_script": [
+                {
+                    "command": "rmdir",
+                    "args": [
+                        "/var/www/REPONAME"
+                    ]
+                }
+            ],
+            "path": "/var/www/REPONAME"
+        }
+    ]
+}
+```
 
-1. **Build and Run Locally**
+2. **Build and Run Locally**
 
    ```sh
    go build -o repo-manager
    ./repo-manager
    ```
 
-2. **Test Endpoints**
+3. **Test Endpoints**
 
    Use test.http or curl:
 

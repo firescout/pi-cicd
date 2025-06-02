@@ -3,7 +3,7 @@
         {
             "name": "REPONAME",
             "url": "https://github.com/example/REPONAME",
-            "after-script": "",
+            "after_script": [],
             "path": "/var/www/REPONAME"
         }
     ]
