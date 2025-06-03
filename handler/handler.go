@@ -3,35 +3,13 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
+	"runtime"
 
 	api "github.com/firescout/repo-manager/restserver"
 )
-
-type HTTPHandler struct {
-	repos Repos
-}
-
-type StdResponse struct {
-	Status  string `json:"status"`
-	Message string `json:"message"`
-}
-
-type Repo struct {
-	Name        string        `json:"name"`
-	Url         string        `json:"url"`
-	AfterScript []AfterScript `json:"after_script"`
-	Path        string        `json:"path"`
-}
-type AfterScript struct {
-	Command string   `json:"command"`
-	Args    []string `json:"args"`
-}
-
-type Repos struct {
-	Repos []Repo `json:"repos"`
-}
 
 func NewHandler() api.DefaultApiServicer {
 	repos := new(Repos)
@@ -43,8 +21,13 @@ func NewHandler() api.DefaultApiServicer {
 	if err != nil {
 		panic("Failed to Unmarshal or parse repos.json: " + err.Error())
 	}
+	if runtime.GOOS != repos.System {
+		panic(fmt.Sprintf("System mismatch: Expected %s but got %s", runtime.GOOS, repos.System))
+	}
 	return &HTTPHandler{
-		repos: *repos,
+		repoCloneDir:  repos.ClonePath,
+		pathSeparator: string(os.PathSeparator),
+		repos:         *repos,
 	}
 }
 
