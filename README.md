@@ -55,6 +55,8 @@ service/
 1. **Setup Json**
 ```json
 {
+    "system": "windows",
+    "clone_path": "C:\\path\\to\\clone",
     "repos": [
         {
             "name": "REPONAME",
