@@ -24,9 +24,8 @@ func (s *HTTPHandler) handleOnPush(repoName string) error {
 			}
 			log.Println("Repository cloned successfully: " + repoName)
 			log.Println("Executing post-pull script for repository: " + repoName)
-			err = os.RemoveAll(s.repoCloneDir + s.pathSeparator + repoName + s.pathSeparator + ".git")
-			if err != nil {
-				log.Println("[ERR] Error removing .git directory: " + err.Error())
+			if err := s.postPullClean(repo.Name); err != nil {
+				log.Println("[ERR] Error executing post-pull script: " + err.Error())
 				return err
 			}
 			if len(repo.AfterScript) > 0 {
@@ -60,6 +59,30 @@ func (s *HTTPHandler) executeAfterScript(repoName string, afterScript []AfterScr
 			return err
 		}
 		log.Println("Script executed successfully: " + string(stdout))
+	}
+	return nil
+}
+
+func (s *HTTPHandler) postPullClean(repoName string) error {
+	err := os.RemoveAll(s.repoCloneDir + s.pathSeparator + repoName + s.pathSeparator + ".git")
+	if err != nil {
+		log.Println("[ERR] Error removing .git directory: " + err.Error())
+		return err
+	}
+	err = os.RemoveAll(s.repoCloneDir + s.pathSeparator + repoName + s.pathSeparator + ".gitea")
+	if err != nil {
+		log.Println("[ERR] Error removing .gitea directory: " + err.Error())
+		return err
+	}
+	err = os.RemoveAll(s.repoCloneDir + s.pathSeparator + repoName + s.pathSeparator + ".github")
+	if err != nil {
+		log.Println("[ERR] Error removing .github directory: " + err.Error())
+		return err
+	}
+	err = os.Remove(s.repoCloneDir + s.pathSeparator + repoName + s.pathSeparator + ".gitignore")
+	if err != nil {
+		log.Println("[ERR] Error removing .gitignore file: " + err.Error())
+		return err
 	}
 	return nil
 }
