@@ -13,7 +13,7 @@ import (
 
 func NewHandler() api.DefaultApiServicer {
 	repos := new(Repos)
-	file, err := os.ReadFile("firescout.json")
+	file, err := os.ReadFile("settings.json")
 	if err != nil {
 		panic("Failed to read repos.json: " + err.Error())
 	}

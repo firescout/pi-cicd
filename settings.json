@@ -1,11 +1,19 @@
 {
-    "system": "windows",
-    "clone_path": "C:\\path\\to\\clone",
+    "system": "linux",  // or "windows"
+    "clone_path": "/home/user/clone",  // or "D:/path/to/clone" for Windows
     "repos": [
         {
             "name": "REPONAME",
             "url": "https://github.com/example/REPONAME",
-            "after_script": [],
+            "after_script": [
+                {
+                    "command": "mv",
+                    "args": [
+                        "source",
+                        "destination"
+                    ]
+                }
+            ],
             "path": "/var/www/REPONAME"
         }
     ]
