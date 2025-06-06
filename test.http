@@ -1,6 +1,4 @@
-@NonRepo = RepoName
-@FoundRepo = REPONAME
-@Repo = Wordpress-plugin-Shabbat-closed
+@Repo = REPONAME
 
 ## GET repository on push
 GET http://localhost:9090/repo/push?repo={{Repo}}
