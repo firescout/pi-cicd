@@ -36,6 +36,11 @@ func (s *HTTPHandler) handleOnPush(repoName string) error {
 					return err
 				}
 			}
+			err = s.cleanupCloneDir(repo.Name)
+			if err != nil {
+				log.Println("[ERR] Error executing cleanup script: " + err.Error())
+				return err
+			}
 			return nil
 		}
 	}
@@ -54,6 +59,17 @@ func (s *HTTPHandler) executeAfterScript(afterScript []AfterScript) error {
 			return err
 		}
 		log.Println("Script executed successfully: " + string(stdout))
+	}
+	return nil
+}
+
+func (s *HTTPHandler) cleanupCloneDir(repoName string) error {
+	log.Println("Executing cleanup script: " + repoName)
+	cmd := exec.Command("rm", "-r", repoName)
+	cmd.Dir = s.repoCloneDir
+	err := os.RemoveAll(s.repoCloneDir + s.pathSeparator + repoName)
+	if err != nil {
+		return err
 	}
 	return nil
 }
