@@ -1,7 +1,3 @@
-Ok. I won't bother you again for now. If you change your mind, you can react to the authentication request in the Account menu.
-
-Collecting workspace information# Repo Manager
-
 Repo Manager is a lightweight Go web service for managing repositories and triggering CI/CD pipelines via HTTP webhooks. It is designed to run on Raspberry Pi OS and can be integrated into automation workflows.
 
 ## Features
